@@ -26,8 +26,9 @@ export const getProductById = async (req, res) => {
 
     // Si el producto no se encuentra, devuelve un mensaje de error
     if (!producto) {
-      return res.status(404).json({ mensaje: "Producto no encontrado" });
+      return res.status(404).json({ mensaje: "Producto no encontrado", productoEncontrado: false });
     }
+    
 
     // Si el producto se encuentra, lo devuelve en formato JSON
     res.json(producto);
