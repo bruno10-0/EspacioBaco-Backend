@@ -27,6 +27,10 @@ export const Usuario = sequelize.define('Usuario', {
         isEmail: true
       }
     },
+    contrasenia: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     telefono: {
       type: DataTypes.STRING,
       allowNull: false,

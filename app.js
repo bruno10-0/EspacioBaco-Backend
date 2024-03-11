@@ -1,9 +1,12 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import cors from "cors";
+
 import indexRouter from "./routes/index.routes.js";
 import product from "./routes/product.routes.js";
-import cors from "cors";
+import user from "./routes/user.routes.js"
+
 
 // Carga las variables de entorno desde el archivo .env
 dotenv.config();
@@ -26,6 +29,7 @@ app.use(morgan("dev"));
 // Rutas principales de la aplicación
 app.use(indexRouter); // Rutas principales
 app.use(product); // Rutas relacionadas con los productos
+app.use(user); // Rutas relacionadas con los usuarios
 
 // Inicia el servidor y lo hace escuchar en el puerto especificado
 app.listen(port, () => {

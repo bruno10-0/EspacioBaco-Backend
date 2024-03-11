@@ -4,7 +4,7 @@ const router= Router();
 
 router.get("/", (req, res) => {
     res.send("Hola master ");
-  });
+});
   
 
   export default router
