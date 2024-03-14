@@ -113,6 +113,15 @@ export const iniciarSesion = async (req, res) => {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
 
+    const datosUsuario = {
+      tipo: usuario.tipo,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      telefono: usuario.telefono,
+      direccion: usuario.direccion,
+    }
+
     // Generar token de acceso
     const token = await createAccessToken({ id: usuario.id });
 
@@ -120,16 +129,9 @@ export const iniciarSesion = async (req, res) => {
     res.cookie("token", token);
 
     // Enviar respuesta exitosa
-    res.status(200).json({
+    res.status(201).json({
       mensaje: "Inicio de sesión exitoso",
-      usuario: {
-        tipo: usuario.tipo,
-        nombre: usuario.nombre,
-        apellido: usuario.apellido,
-        correo: usuario.correo,
-        telefono: usuario.telefono,
-        direccion: usuario.direccion,
-      },
+      usuario: datosUsuario
     });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
