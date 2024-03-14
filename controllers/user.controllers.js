@@ -1,4 +1,5 @@
 import { Usuario } from "../models/user.model.js";
+import bcrypt from "bcrypt";
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -53,19 +54,22 @@ export const crearUsuario = async (req, res) => {
         .json({ mensaje: "Ya existe un usuario con este correo." });
     }
 
+    //hasear la contrasenia
+    let contraseniaHash = await bcrypt.hash(contrasenia, 10);
+
     // Crear un nuevo usuario en la base de datos
-    const nuevoUsuario = await Usuario.create({
+    Usuario.create({
       tipo,
       nombre,
       apellido,
       correo,
       telefono,
       direccion,
-      contrasenia,
+      contrasenia: contraseniaHash,
     });
 
     // Enviar el nuevo usuario creado como respuesta
-    res.status(201).json(nuevoUsuario);
+    res.status(201);
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
@@ -82,7 +86,7 @@ export const editarUsuario = async (req, res) => {
 
     // Verificar si se encontró el usuario
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
+      return res.status(404).json({ mensaje: "Usuario no encontrado." });
     }
 
     // Extraer los datos actualizados del cuerpo de la solicitud
@@ -102,8 +106,8 @@ export const editarUsuario = async (req, res) => {
     // Enviar el usuario actualizado como respuesta
     res.status(200).json(usuario);
   } catch (error) {
-    console.error('Error al editar usuario:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    console.error("Error al editar usuario:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
 
@@ -117,17 +121,17 @@ export const eliminarUsuario = async (req, res) => {
 
     // Verificar si se encontró el usuario
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
+      return res.status(404).json({ mensaje: "Usuario no encontrado." });
     }
 
     // Eliminar el usuario de la base de datos
     await usuario.destroy();
 
     // Enviar un mensaje de éxito como respuesta
-    res.status(200).json({ mensaje: 'Usuario eliminado correctamente.' });
+    res.status(200).json({ mensaje: "Usuario eliminado correctamente." });
   } catch (error) {
-    console.error('Error al eliminar usuario:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    console.error("Error al eliminar usuario:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
 
@@ -138,16 +142,18 @@ export const eliminarUsuarios = async (req, res) => {
 
     // Verificar si se proporcionaron IDs válidos
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ mensaje: 'Se requiere al menos un ID de usuario válido.' });
+      return res
+        .status(400)
+        .json({ mensaje: "Se requiere al menos un ID de usuario válido." });
     }
 
     // Eliminar los usuarios de la base de datos
     await Usuario.destroy({ where: { id: ids } });
 
     // Enviar un mensaje de éxito como respuesta
-    res.status(200).json({ mensaje: 'Usuarios eliminados correctamente.' });
+    res.status(200).json({ mensaje: "Usuarios eliminados correctamente." });
   } catch (error) {
-    console.error('Error al eliminar usuarios:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    console.error("Error al eliminar usuarios:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
