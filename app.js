@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import indexRouter from "./routes/index.routes.js";
 import product from "./routes/product.routes.js";
@@ -22,6 +23,9 @@ app.use(express.json());
 
 // Middleware para habilitar la comunicación entre servidores (CORS)
 app.use(cors());
+
+// Middleware para analizar cookies en las solicitudes entrantes
+app.use(cookieParser());
 
 // Middleware para el registro de solicitudes HTTP (solicitudes de desarrollo)
 app.use(morgan("dev"));
