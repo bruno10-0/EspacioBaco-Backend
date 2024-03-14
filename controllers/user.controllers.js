@@ -120,7 +120,7 @@ export const iniciarSesion = async (req, res) => {
       correo: usuario.correo,
       telefono: usuario.telefono,
       direccion: usuario.direccion,
-    }
+    };
 
     // Generar token de acceso
     const token = await createAccessToken({ id: usuario.id });
@@ -131,7 +131,7 @@ export const iniciarSesion = async (req, res) => {
     // Enviar respuesta exitosa
     res.status(201).json({
       mensaje: "Inicio de sesión exitoso",
-      usuario: datosUsuario
+      usuario: datosUsuario,
     });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
@@ -139,6 +139,13 @@ export const iniciarSesion = async (req, res) => {
       .status(500)
       .json({ mensaje: "Error interno del servidor al iniciar sesión" });
   }
+};
+
+export const cerrarSesion = async (req, res) => {
+  res.cookie("token", "", {
+    expires: new Date(0)
+  });
+  return res.sendStatus(200);
 };
 
 export const editarUsuario = async (req, res) => {

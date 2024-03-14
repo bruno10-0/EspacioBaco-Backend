@@ -7,14 +7,17 @@ import {
   eliminarUsuarios,
   obtenerUsuarioPorId,
   obtenerUsuarios,
-  iniciarSesion
+  iniciarSesion,
+  cerrarSesion,
 } from "../controllers/user.controllers.js";
 
 const router = Router();
 
 router.get("/usuarios", obtenerUsuarios);
+
 router.post("/usuarios", crearUsuario);
 router.post("/iniciar-sesion", iniciarSesion);
+router.post("/cerrar-sesion", cerrarSesion);
 // Rutas para obtener, editar y eliminar un usuario por su ID
 router.get("/usuarios/:id", obtenerUsuarioPorId);
 router.put("/usuarios/:id", editarUsuario);
