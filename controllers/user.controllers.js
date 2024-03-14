@@ -1,5 +1,6 @@
 import { Usuario } from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import {createAccessToken} from '../utils/jwt.js'
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -68,13 +69,27 @@ export const crearUsuario = async (req, res) => {
       contrasenia: contraseniaHash,
     });
 
+    const usuarioSinContrasenia = {
+      tipo: nuevoUsuario.tipo,
+      nombre: nuevoUsuario.nombre,
+      apellido: nuevoUsuario.apellido,
+      correo: nuevoUsuario.correo,
+      telefono: nuevoUsuario.telefono,
+      direccion: nuevoUsuario.direccion,
+    };
+
+    const token = await createAccessToken({id:nuevoUsuario.id})
+
+    res.cookie("token",token);
     // Enviar el nuevo usuario creado como respuesta
-    res.status(201).json({ mensaje: "Usuario creado exitosamente", usuario: nuevoUsuario });
+    res.status(201).json({mensaje: "Usuario creado exitosamente",usuario: usuarioSinContrasenia,});
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+
+export const iniciarSesion = async (req, res) => {};
 
 export const editarUsuario = async (req, res) => {
   try {
