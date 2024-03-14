@@ -54,11 +54,11 @@ export const crearUsuario = async (req, res) => {
         .json({ mensaje: "Ya existe un usuario con este correo." });
     }
 
-    //hasear la contrasenia
-    let contraseniaHash = await bcrypt.hash(contrasenia, 10);
+    // Hasear la contrasenia
+    const contraseniaHash = await bcrypt.hash(contrasenia, 10);
 
     // Crear un nuevo usuario en la base de datos
-    Usuario.create({
+    const nuevoUsuario = await Usuario.create({
       tipo,
       nombre,
       apellido,
@@ -69,7 +69,7 @@ export const crearUsuario = async (req, res) => {
     });
 
     // Enviar el nuevo usuario creado como respuesta
-    res.status(201);
+    res.status(201).json({ mensaje: "Usuario creado exitosamente", usuario: nuevoUsuario });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
