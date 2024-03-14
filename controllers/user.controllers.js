@@ -1,6 +1,6 @@
 import { Usuario } from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import {createAccessToken} from '../utils/jwt.js'
+import { createAccessToken } from "../utils/jwt.js";
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -78,18 +78,66 @@ export const crearUsuario = async (req, res) => {
       direccion: nuevoUsuario.direccion,
     };
 
-    const token = await createAccessToken({id:nuevoUsuario.id})
+    const token = await createAccessToken({ id: nuevoUsuario.id });
 
-    res.cookie("token",token);
+    res.cookie("token", token);
     // Enviar el nuevo usuario creado como respuesta
-    res.status(201).json({mensaje: "Usuario creado exitosamente",usuario: usuarioSinContrasenia,});
+    res.status(201).json({
+      mensaje: "Usuario creado exitosamente",
+      usuario: usuarioSinContrasenia,
+    });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
 
-export const iniciarSesion = async (req, res) => {};
+export const iniciarSesion = async (req, res) => {
+  try {
+    const { correo, contrasenia } = req.body;
+
+    // Buscar usuario por correo electrónico
+    const usuario = await Usuario.findOne({ where: { correo } });
+
+    if (!usuario) {
+      return res.status(401).json({ mensaje: "Credenciales inválidas" });
+    }
+
+    // Verificar si la contraseña es correcta
+    const contraseniaValida = await bcrypt.compare(
+      contrasenia,
+      usuario.contrasenia
+    );
+
+    if (!contraseniaValida) {
+      return res.status(401).json({ mensaje: "Credenciales inválidas" });
+    }
+
+    // Generar token de acceso
+    const token = await createAccessToken({ id: usuario.id });
+
+    // Establecer el token en una cookie o enviarlo en la respuesta, según tu preferencia
+    res.cookie("token", token);
+
+    // Enviar respuesta exitosa
+    res.status(200).json({
+      mensaje: "Inicio de sesión exitoso",
+      usuario: {
+        tipo: usuario.tipo,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        correo: usuario.correo,
+        telefono: usuario.telefono,
+        direccion: usuario.direccion,
+      },
+    });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    res
+      .status(500)
+      .json({ mensaje: "Error interno del servidor al iniciar sesión" });
+  }
+};
 
 export const editarUsuario = async (req, res) => {
   try {
