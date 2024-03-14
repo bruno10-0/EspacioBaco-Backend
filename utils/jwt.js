@@ -7,7 +7,7 @@ export function createAccessToken(payload) {
   return new Promise((resolve, reject) => {
     jwt.sign(
       payload,
-      process.env.PORT.SECRET_KEY,
+      process.env.TOKEN_SECRET,
       {
         expiresIn: "1d",
       },
