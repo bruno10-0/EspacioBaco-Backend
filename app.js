@@ -21,7 +21,12 @@ const app = express();
 app.use(express.json());
 
 // Middleware para habilitar la comunicación entre servidores (CORS)
-app.use(cors({ Credential: true }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // Middleware para analizar cookies en las solicitudes entrantes
 app.use(cookieParser());
