@@ -6,8 +6,7 @@ import cookieParser from "cookie-parser";
 
 import indexRouter from "./routes/index.routes.js";
 import product from "./routes/product.routes.js";
-import user from "./routes/user.routes.js"
-
+import user from "./routes/user.routes.js";
 
 // Carga las variables de entorno desde el archivo .env
 dotenv.config();
@@ -22,7 +21,7 @@ const app = express();
 app.use(express.json());
 
 // Middleware para habilitar la comunicación entre servidores (CORS)
-app.use(cors());
+app.use(cors({ Credential: true }));
 
 // Middleware para analizar cookies en las solicitudes entrantes
 app.use(cookieParser());

@@ -80,7 +80,10 @@ export const crearUsuario = async (req, res) => {
 
     const token = await createAccessToken({ id: nuevoUsuario.id });
 
-    res.cookie("token", token, { secure: true });
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+    });
     // Enviar el nuevo usuario creado como respuesta
     res.status(201).json({
       mensaje: "Usuario creado exitosamente",
@@ -126,7 +129,10 @@ export const iniciarSesion = async (req, res) => {
     const token = await createAccessToken({ id: usuario.id });
 
     // Establecer el token en una cookie o enviarlo en la respuesta, según tu preferencia
-    res.cookie("token", token, { secure: true });
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+    });
 
     // Enviar respuesta exitosa
     res.status(201).json({
@@ -143,7 +149,7 @@ export const iniciarSesion = async (req, res) => {
 
 export const cerrarSesion = async (req, res) => {
   res.cookie("token", "", {
-    expires: new Date(0)
+    expires: new Date(0),
   });
   return res.sendStatus(200);
 };
