@@ -1,6 +1,10 @@
 import { Usuario } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { createAccessToken } from "../utils/jwt.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -240,5 +244,40 @@ export const eliminarUsuarios = async (req, res) => {
   } catch (error) {
     console.error("Error al eliminar usuarios:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+export const verificarToken = async (req, res) => {
+  const { token } = req.cookies;
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ mensaje: "Acceso no autorizado, token no proporcionado." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id } = decoded;
+
+    const usuarioEncontrado = await Usuario.findByPk(id);
+    if (!usuarioEncontrado) {
+      return res
+        .status(401)
+        .json({ mensaje: "Acceso no autorizado, usuario no encontrado." });
+    }
+
+    return res.json({
+      tipo: usuarioEncontrado.tipo,
+      nombre: usuarioEncontrado.nombre,
+      apellido: usuarioEncontrado.apellido,
+      correo: usuarioEncontrado.correo,
+      telefono: usuarioEncontrado.telefono,
+      direccion: usuarioEncontrado.direccion,
+    });
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ mensaje: "Acceso no autorizado, token inválido." });
   }
 };

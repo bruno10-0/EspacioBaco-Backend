@@ -9,6 +9,7 @@ import {
   obtenerUsuarios,
   iniciarSesion,
   cerrarSesion,
+  verificarToken,
 } from "../controllers/user.controllers.js";
 import { validateTokenAdmin } from "../middlewares/validateTokenAdmin.js";
 const router = Router();
@@ -26,4 +27,6 @@ router.delete("/usuarios/:id", validateTokenAdmin, eliminarUsuario);
 // Ruta para eliminar múltiples usuarios
 router.delete("/usuarios", validateTokenAdmin, eliminarUsuarios);
 
+//Ruta para verificar el Token de el frontend
+router.get("/verificar", verificarToken);
 export default router;
