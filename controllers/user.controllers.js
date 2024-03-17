@@ -249,7 +249,7 @@ export const eliminarUsuarios = async (req, res) => {
 };
 
 export const verificarToken = async (req, res) => {
-  const { token } = req.cookies;
+  const { token } = req.body;
 
   if (!token) {
     return res

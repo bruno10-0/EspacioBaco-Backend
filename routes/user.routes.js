@@ -28,5 +28,5 @@ router.delete("/usuarios/:id", validateTokenAdmin, eliminarUsuario);
 router.delete("/usuarios", validateTokenAdmin, eliminarUsuarios);
 
 //Ruta para verificar el Token de el frontend
-router.get("/verificar", verificarToken);
+router.post("/verificar", verificarToken);
 export default router;
