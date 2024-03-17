@@ -136,16 +136,19 @@ export const iniciarSesion = async (req, res) => {
     // Generar token de acceso
     const token = await createAccessToken({ id: usuario.id });
 
-    // Establecer el token en una cookie o enviarlo en la respuesta, según tu preferencia
-    /* res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Fecha de expiración en 1 día
-      path: "/", // La cookie es válida para todas las rutas del sitio
-    });
-    */
-    // Enviar respuesta exitosa
+    // Establecer el token en una cookie (opcional)
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "None",
+    //   expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Fecha de expiración en 1 día
+    //   path: "/", // La cookie es válida para todas las rutas del sitio
+    // });
+
+    // Establecer el token en el encabezado de la respuesta
+    res.setHeader("Authorization", `Bearer ${token}`);
+
+    // Enviar respuesta exitosa con el token y datos del usuario
     res.status(201).json({
       mensaje: "Inicio de sesión exitoso",
       usuario: datosUsuario,

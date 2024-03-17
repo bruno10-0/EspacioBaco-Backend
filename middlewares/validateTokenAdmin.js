@@ -5,13 +5,15 @@ import { Usuario } from "../models/user.model.js";
 dotenv.config();
 
 export const validateTokenAdmin = async (req, res, next) => {
-  const { token } = req.cookies;
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       mensaje: "No se recibió un Token. Autorización denegada.",
     });
   }
+
+  const token = authHeader.split(" ")[1];
 
   try {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
