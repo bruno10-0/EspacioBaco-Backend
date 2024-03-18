@@ -84,18 +84,11 @@ export const crearUsuario = async (req, res) => {
 
     const token = await createAccessToken({ id: nuevoUsuario.id });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Fecha de expiración en 1 día
-      path: "/", // La cookie es válida para todas las rutas del sitio
-    });
-
     // Enviar el nuevo usuario creado como respuesta
     res.status(201).json({
       mensaje: "Usuario creado exitosamente",
       usuario: usuarioSinContrasenia,
+      token
     });
   } catch (error) {
     console.error("Error al crear usuario:", error);
