@@ -116,30 +116,17 @@ export const iniciarSesion = async (req, res) => {
     if (!contraseniaValida) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
     }
-
-    const datosUsuario = {
-      tipo: usuario.tipo,
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
-      correo: usuario.correo,
-      telefono: usuario.telefono,
-      direccion: usuario.direccion,
-    };
-
     // Generar token de acceso
     const token = await createAccessToken({ id: usuario.id });
 
     // Enviar respuesta exitosa con los datos de el usuario y el token de acceso.
     res.status(201).json({
       mensaje: "Inicio de sesión exitoso",
-      usuario: datosUsuario,
       token, // Envía el token al frontend
     });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
-    res
-      .status(500)
-      .json({ mensaje: "Error interno del servidor al iniciar sesión" });
+    res.status(500).json({ mensaje: "Error interno del servidor al iniciar sesión" });
   }
 };
 
