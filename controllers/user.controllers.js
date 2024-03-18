@@ -48,8 +48,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
 export const crearUsuario = async (req, res) => {
   try {
     // Extraer los datos del cuerpo de la solicitud
-    const { tipo, nombre, apellido, correo, telefono, direccion, contrasenia } =
-      req.body;
+    const {nombre, apellido, correo, telefono, direccion, contrasenia } = req.body;
 
     // Verificar si ya existe un usuario con el mismo correo
     const usuarioExistente = await Usuario.findOne({ where: { correo } });
@@ -64,7 +63,6 @@ export const crearUsuario = async (req, res) => {
 
     // Crear un nuevo usuario en la base de datos
     const nuevoUsuario = await Usuario.create({
-      tipo,
       nombre,
       apellido,
       correo,
@@ -73,21 +71,11 @@ export const crearUsuario = async (req, res) => {
       contrasenia: contraseniaHash,
     });
 
-    const usuarioSinContrasenia = {
-      tipo: nuevoUsuario.tipo,
-      nombre: nuevoUsuario.nombre,
-      apellido: nuevoUsuario.apellido,
-      correo: nuevoUsuario.correo,
-      telefono: nuevoUsuario.telefono,
-      direccion: nuevoUsuario.direccion,
-    };
-
     const token = await createAccessToken({ id: nuevoUsuario.id });
 
     // Enviar el nuevo usuario creado como respuesta
     res.status(201).json({
       mensaje: "Usuario creado exitosamente",
-      usuario: usuarioSinContrasenia,
       token
     });
   } catch (error) {
