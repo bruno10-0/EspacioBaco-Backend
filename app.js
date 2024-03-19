@@ -23,13 +23,10 @@ app.use(express.json());
 // Middleware para habilitar la comunicación entre servidores (CORS)
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://dist-anali.vercel.app"],
     credentials: true,
   })
 );
-
-// Middleware para analizar cookies en las solicitudes entrantes
-app.use(cookieParser());
 
 // Middleware para el registro de solicitudes HTTP (solicitudes de desarrollo)
 app.use(morgan("dev"));
