@@ -2,7 +2,6 @@ import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 
 import indexRouter from "./routes/index.routes.js";
 import product from "./routes/product.routes.js";
