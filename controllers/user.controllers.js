@@ -234,6 +234,8 @@ export const verificarToken = async (req, res) => {
       correo: usuarioEncontrado.correo,
       telefono: usuarioEncontrado.telefono,
       direccion: usuarioEncontrado.direccion,
+      creacion: usuarioEncontrado.createdAt,
+      actualizacion: usuarioEncontrado. updatedAt
     });
   } catch (error) {
     return res
