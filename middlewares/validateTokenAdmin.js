@@ -5,13 +5,15 @@ import { Usuario } from "../models/user.model.js";
 dotenv.config();
 
 export const validateTokenAdmin = async (req, res, next) => {
-  const { token } = req.body;
+  const tokenHeader = req.headers.authorization;
 
-  if (!token) {
+  if (!tokenHeader) {
     return res.status(401).json({
       mensaje: "No se recibió un Token. Autorización denegada.",
     });
   }
+
+  const token = tokenHeader.split(' ')[1]; // Obtener solo el token sin 'Bearer'
 
   try {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -47,3 +49,4 @@ export const validateTokenAdmin = async (req, res, next) => {
     });
   }
 };
+
