@@ -8,7 +8,6 @@ import {
   obtenerUsuarioPorId,
   obtenerUsuarios,
   iniciarSesion,
-  cerrarSesion,
   verificarToken,
 } from "../controllers/user.controllers.js";
 import { validateTokenAdmin } from "../middlewares/validateTokenAdmin.js";
@@ -18,7 +17,6 @@ router.get("/usuarios", validateTokenAdmin, obtenerUsuarios);
 
 router.post("/usuarios", crearUsuario);
 router.post("/iniciar-sesion", iniciarSesion);
-router.post("/cerrar-sesion", cerrarSesion);
 // Rutas para obtener, editar y eliminar un usuario por su ID
 router.get("/usuarios/:id", validateTokenAdmin, obtenerUsuarioPorId);
 router.put("/usuarios/:id", editarUsuario);

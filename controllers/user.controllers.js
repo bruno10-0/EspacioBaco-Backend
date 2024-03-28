@@ -48,8 +48,11 @@ export const obtenerUsuarioPorId = async (req, res) => {
 export const crearUsuario = async (req, res) => {
   try {
     // Extraer los datos del cuerpo de la solicitud
-    const {nombre, apellido, correo, telefono, direccion, contrasenia } = req.body;
-
+    const {nombre, apellido, correo, telefono, direccion, contrasenia, tipo } = req.body;
+    
+    if(!tipo){
+      tipo="normal"
+    }
     // Verificar si ya existe un usuario con el mismo correo
     const usuarioExistente = await Usuario.findOne({ where: { correo } });
     if (usuarioExistente) {
@@ -62,7 +65,10 @@ export const crearUsuario = async (req, res) => {
     const contraseniaHash = await bcrypt.hash(contrasenia, 10);
 
     // Crear un nuevo usuario en la base de datos
+
+
     const nuevoUsuario = await Usuario.create({
+      tipo,
       nombre,
       apellido,
       correo,
@@ -116,13 +122,6 @@ export const iniciarSesion = async (req, res) => {
     console.error("Error al iniciar sesión:", error);
     res.status(500).json({ mensaje: "Error interno del servidor al iniciar sesión" });
   }
-};
-
-export const cerrarSesion = async (req, res) => {
-  res.cookie("token", "", {
-    expires: new Date(0),
-  });
-  return res.sendStatus(200);
 };
 
 export const editarUsuario = async (req, res) => {
