@@ -122,7 +122,7 @@ export const crearUsuarioPorAdmin = async (req, res) => {
       contrasenia: contraseniaHash,
     });
 
-    res.status(201);
+    res.status(201).json({ mensaje: "Usuario creado exitosamente." });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
