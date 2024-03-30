@@ -48,10 +48,11 @@ export const obtenerUsuarioPorId = async (req, res) => {
 export const crearUsuario = async (req, res) => {
   try {
     // Extraer los datos del cuerpo de la solicitud
-    const {nombre, apellido, correo, telefono, direccion, contrasenia, tipo } = req.body;
-    
-    if(!tipo){
-      tipo="normal"
+    const { nombre, apellido, correo, telefono, direccion, contrasenia, tipo } =
+      req.body;
+
+    if (!tipo) {
+      tipo = "normal";
     }
     // Verificar si ya existe un usuario con el mismo correo
     const usuarioExistente = await Usuario.findOne({ where: { correo } });
@@ -65,7 +66,6 @@ export const crearUsuario = async (req, res) => {
     const contraseniaHash = await bcrypt.hash(contrasenia, 10);
 
     // Crear un nuevo usuario en la base de datos
-
 
     const nuevoUsuario = await Usuario.create({
       tipo,
@@ -82,8 +82,47 @@ export const crearUsuario = async (req, res) => {
     // Enviar el nuevo usuario creado como respuesta
     res.status(201).json({
       mensaje: "Usuario creado exitosamente",
-      token
+      token,
     });
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+export const crearUsuarioPorAdmin = async (req, res) => {
+  try {
+    // Extraer los datos del cuerpo de la solicitud
+    const { nombre, apellido, correo, telefono, direccion, contrasenia, tipo } =
+      req.body;
+
+    if (!tipo) {
+      tipo = "normal";
+    }
+    // Verificar si ya existe un usuario con el mismo correo
+    const usuarioExistente = await Usuario.findOne({ where: { correo } });
+    if (usuarioExistente) {
+      return res
+        .status(400)
+        .json({ mensaje: "Ya existe un usuario con este correo." });
+    }
+
+    // Hasear la contrasenia
+    const contraseniaHash = await bcrypt.hash(contrasenia, 10);
+
+    // Crear un nuevo usuario en la base de datos
+
+    await Usuario.create({
+      tipo,
+      nombre,
+      apellido,
+      correo,
+      telefono,
+      direccion,
+      contrasenia: contraseniaHash,
+    });
+
+    res.status(201);
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
@@ -120,7 +159,9 @@ export const iniciarSesion = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
-    res.status(500).json({ mensaje: "Error interno del servidor al iniciar sesión" });
+    res
+      .status(500)
+      .json({ mensaje: "Error interno del servidor al iniciar sesión" });
   }
 };
 
@@ -234,7 +275,7 @@ export const verificarToken = async (req, res) => {
       telefono: usuarioEncontrado.telefono,
       direccion: usuarioEncontrado.direccion,
       creacion: usuarioEncontrado.createdAt,
-      actualizacion: usuarioEncontrado. updatedAt
+      actualizacion: usuarioEncontrado.updatedAt,
     });
   } catch (error) {
     return res
