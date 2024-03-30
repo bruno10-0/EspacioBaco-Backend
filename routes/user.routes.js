@@ -16,6 +16,7 @@ const router = Router();
 router.get("/usuarios", validateTokenAdmin, obtenerUsuarios);
 
 router.post("/usuarios", crearUsuario);
+router.post("/AdminUsuarios",validateTokenAdmin,crearUsuario); //Ruta para que usuarios admin creen otros usuarios, Admins o Normales.
 router.post("/iniciar-sesion", iniciarSesion);
 // Rutas para obtener, editar y eliminar un usuario por su ID
 router.get("/usuarios/:id", validateTokenAdmin, obtenerUsuarioPorId);
