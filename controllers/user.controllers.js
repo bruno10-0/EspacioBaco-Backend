@@ -181,6 +181,22 @@ export const editarUsuario = async (req, res) => {
     // Extraer los datos actualizados del cuerpo de la solicitud
     const { tipo, nombre, apellido, correo, telefono, direccion } = req.body;
 
+    // Verificar si el correo ya está en uso por otro usuario
+    const usuarioConCorreo = await Usuario.findOne({ where: { correo } });
+    const usuarioConTelefono = await Usuario.findOne({ where: { telefono } });
+
+    if (usuarioConCorreo && usuarioConCorreo.id !== id) {
+      return res
+        .status(400)
+        .json({ mensaje: "El correo ya está en uso por otro usuario." });
+    }
+
+    if (usuarioConTelefono && usuarioConTelefono.id !== id) {
+      return res
+        .status(400)
+        .json({ mensaje: "El teléfono ya está en uso por otro usuario." });
+    }
+
     // Actualizar los datos del usuario
     usuario.tipo = tipo;
     usuario.nombre = nombre;
