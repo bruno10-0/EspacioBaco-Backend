@@ -52,7 +52,7 @@ export const Product = sequelize.define("Producto", {
 });
 
 // Sincroniza el modelo Producto con la base de datos
-Product.sync()
+Product.sync({ alter: true })
   .then(() => {
     console.log(
       'Modelo "Producto" sincronizado correctamente con la base de datos.'

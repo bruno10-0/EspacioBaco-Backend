@@ -49,7 +49,7 @@ export const Usuario = sequelize.define("Usuario", {
     defaultValue: DataTypes.NOW,
   },
 });
-Usuario.sync()
+Usuario.sync({ alter: true })
   .then(() => {
     console.log(
       'Modelo "Usuario" sincronizado correctamente con la base de datos.'

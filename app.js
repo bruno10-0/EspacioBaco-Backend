@@ -3,7 +3,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import indexRouter from "./routes/index.routes.js";
+import publication from "./routes/publication.routes.js";
 import product from "./routes/product.routes.js";
 import user from "./routes/user.routes.js";
 
@@ -31,13 +31,11 @@ app.use(
 app.use(morgan("dev"));
 
 // Rutas principales de la aplicación
-app.use(indexRouter); // Rutas principales
+app.use(publication); // Rutas relacionadas con las publicaciones
 app.use(product); // Rutas relacionadas con los productos
 app.use(user); // Rutas relacionadas con los usuarios
 
 // Inicia el servidor y lo hace escuchar en el puerto especificado
 app.listen(port, () => {
-  console.log(
-    `El servidor está funcionando en el puerto http://localhost:${port}`
-  );
+  console.log("El servidor está funcionando correctamente");
 });
