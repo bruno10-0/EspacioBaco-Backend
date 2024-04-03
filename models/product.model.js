@@ -37,6 +37,9 @@ export const Product = sequelize.define("Producto", {
       "https://images.vexels.com/media/users/3/215895/isolated/preview/36ec60399b703a700d20bec25f1c2ce8-botella-de-vino-y-trazo-de-vidrio.png",
     allowNull: true, // Permitir nulos si no todas las entradas tienen imágenes
   },
+  public_id: {
+    type: DataTypes.STRING,
+  },
   tipo: {
     type: DataTypes.STRING,
     allowNull: false,

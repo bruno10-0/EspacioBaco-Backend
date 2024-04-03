@@ -1,4 +1,6 @@
 import { Product } from "../models/product.model.js";
+import fs from "fs-extra";
+import { subirImagenProducto } from "../utils/cloudinary.js";
 export const getProducts = async (req, res) => {
   try {
     // Busca todos los productos en la base de datos
@@ -26,9 +28,10 @@ export const getProductById = async (req, res) => {
 
     // Si el producto no se encuentra, devuelve un mensaje de error
     if (!producto) {
-      return res.status(404).json({ mensaje: "Producto no encontrado", productoEncontrado: false });
+      return res
+        .status(404)
+        .json({ mensaje: "Producto no encontrado", productoEncontrado: false });
     }
-    
 
     // Si el producto se encuentra, lo devuelve en formato JSON
     res.json(producto);
@@ -48,26 +51,47 @@ export const postProduct = async (req, res) => {
       descripcion_corta,
       precio,
       stock,
-      imagen,
       tipo,
     } = req.body;
 
-    // Crea un nuevo producto con los datos desestructurados
-    const nuevoProducto = await Product.create({
-      nombre,
-      nombreBodega,
-      descripcion_detallada,
-      descripcion_corta,
-      precio,
-      stock,
-      imagen,
-      tipo,
+    if (!req.files?.imagen) {
+      return res
+        .status(400)
+        .json({ error: "No se recibió una imágen en la solicitud" });
+    }
+
+    const producto = Product.build({
+      nombre: nombre,
+      nombreBodega: nombreBodega,
+      descripcion_detallada: descripcion_detallada,
+      descripcion_corta: descripcion_corta,
+      precio: precio,
+      stock: stock,
+      tipo: tipo,
     });
 
-    // Si el producto se crea exitosamente, devuelve el producto creado en formato JSON
-    res.status(201).json(nuevoProducto);
+    try {
+      const respuestaImagen = await subirImagenProducto(
+        req.files.imagen.tempFilePath
+      );
+      producto.imagen = respuestaImagen.secure_url;
+      producto.public_id = respuestaImagen.public_id;
+
+      await fs.unlink(req.files.imagen.tempFilePath);
+
+      await producto.save();
+
+      // Si el producto se crea exitosamente, devuelve el producto creado en formato JSON
+
+      res.status(201).json({ mensaje: "Producto creado exitosamente" });
+    } catch (error) {
+      // Si ocurre un error durante la creación del producto, maneja los posibles errores
+      console.error(
+        "Error al guardar el Producto en la base de datos:",
+        error
+      );
+    }
   } catch (error) {
-    // Si ocurre un error durante la creación del producto, maneja los posibles errores
     if (error.name === "SequelizeValidationError") {
       // Si hay errores de validación, devuelve un mensaje de error con los detalles de validación
       const errores = error.errors.map((err) => ({

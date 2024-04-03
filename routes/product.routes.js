@@ -1,3 +1,4 @@
+import fileUpload from "express-fileupload";
 import { Router } from "express";
 import {
   getProducts,
@@ -14,7 +15,7 @@ router.get("/products", getProducts);
 
 router.post("/product/:id", getProductById);
 
-router.post("/product", validateTokenAdmin, postProduct);
+router.post("/product", validateTokenAdmin,fileUpload({useTempFiles : true,tempFileDir : './temp'}),postProduct);
 
 router.put("/product/:id", validateTokenAdmin, putProduct);
 

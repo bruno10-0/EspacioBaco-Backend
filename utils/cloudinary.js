@@ -20,3 +20,9 @@ export async function borrarImagenesPublicacion(public_id1, public_id2) {
   await cloudinary.uploader.destroy(public_id2);
   return;
 }
+
+export async function subirImagenProducto(ruta) {
+  return await cloudinary.uploader.upload(ruta, {
+    folder: "espacioBacoImganes/producto",
+  });
+}
