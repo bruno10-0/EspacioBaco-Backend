@@ -57,7 +57,7 @@ export const postProduct = async (req, res) => {
     if (!req.files?.imagen) {
       return res
         .status(400)
-        .json({ error: "No se recibió una imágen en la solicitud" });
+        .json({ mensaje: "No se recibió una imágen en la solicitud" });
     }
 
     const producto = Product.build({
