@@ -22,7 +22,7 @@ app.use(express.json());
 // Middleware para habilitar la comunicación entre servidores (CORS)
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://espaciobaco.vercel.app/"],
+    origin: ["http://localhost:5173", "https://espaciobaco.vercel.app"],
     credentials: true,
   })
 );
