@@ -23,6 +23,22 @@ export const Product = sequelize.define("Producto", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  año: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  region: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  pais: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  maridaje: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   precio: {
     type: DataTypes.FLOAT,
     allowNull: false,

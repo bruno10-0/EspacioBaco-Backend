@@ -52,6 +52,10 @@ export const postProduct = async (req, res) => {
       precio,
       stock,
       tipo,
+      anio,
+      region,
+      pais,
+      maridaje,
     } = req.body;
 
     if (!req.files?.imagen) {
@@ -68,6 +72,10 @@ export const postProduct = async (req, res) => {
       precio: precio,
       stock: stock,
       tipo: tipo,
+      año: anio,
+      region: region,
+      pais: pais,
+      maridaje: maridaje,
     });
 
     try {
@@ -86,10 +94,7 @@ export const postProduct = async (req, res) => {
       res.status(201).json({ mensaje: "Producto creado exitosamente" });
     } catch (error) {
       // Si ocurre un error durante la creación del producto, maneja los posibles errores
-      console.error(
-        "Error al guardar el Producto en la base de datos:",
-        error
-      );
+      console.error("Error al guardar el Producto en la base de datos:", error);
     }
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
