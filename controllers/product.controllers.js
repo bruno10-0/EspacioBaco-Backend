@@ -165,3 +165,25 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+export const eliminarProductos = async (req, res) => {
+  try {
+    // Obtener los IDs de los productos a eliminar desde el cuerpo de la solicitud
+    const { ids } = req.body;
+
+    // Verificar si se proporcionaron IDs válidos
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res
+        .status(400)
+        .json({ mensaje: "Se requiere al menos un ID de producto válido." });
+    }
+
+    // Eliminar los Productos de la base de datos
+    await Product.destroy({ where: { id: ids } });
+
+    // Enviar un mensaje de éxito como respuesta
+    res.status(200).json({ mensaje: "Productos eliminados correctamente." });
+  } catch (error) {
+    console.error("Error al eliminar Productos:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};

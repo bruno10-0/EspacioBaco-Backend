@@ -6,6 +6,7 @@ import {
   putProduct,
   deleteProduct,
   getProductById,
+  eliminarProductos
 } from "../controllers/product.controllers.js";
 import { validateTokenAdmin } from "../middlewares/validateTokenAdmin.js";
 
@@ -21,4 +22,5 @@ router.put("/product/:id", validateTokenAdmin, putProduct);
 
 router.delete("/product/:id", validateTokenAdmin, deleteProduct);
 
+router.delete("/products", validateTokenAdmin, eliminarProductos);
 export default router;
