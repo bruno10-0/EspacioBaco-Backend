@@ -14,7 +14,7 @@ const router = Router();
 
 router.get("/products", getProducts);
 
-router.post("/product/:id", getProductById);
+router.get("/product/:id", getProductById);
 
 router.post("/product", validateTokenAdmin,fileUpload({useTempFiles : true,tempFileDir : './temp'}),postProduct);
 

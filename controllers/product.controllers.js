@@ -126,7 +126,7 @@ export const putProduct = async (req, res) => {
     await producto.update(req.body);
 
     // Devuelve el producto actualizado en formato JSON
-    res.json(producto);
+    res.status(201).json({ mensaje: "Producto actualizado exitosamente" });
   } catch (error) {
     // Si ocurre un error durante la actualización del producto, maneja los posibles errores
     if (error.name === "SequelizeValidationError") {
