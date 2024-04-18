@@ -60,7 +60,7 @@ export const Product = sequelize.define("Producto", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  createdAt: {
+  createdAt:{
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },

@@ -6,6 +6,7 @@ import cors from "cors";
 import publication from "./routes/publication.routes.js";
 import product from "./routes/product.routes.js";
 import user from "./routes/user.routes.js";
+import cart from "./routes/cart.routers.js";
 
 // Carga las variables de entorno desde el archivo .env
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(morgan("dev"));
 app.use(publication); // Rutas relacionadas con las publicaciones
 app.use(product); // Rutas relacionadas con los productos
 app.use(user); // Rutas relacionadas con los usuarios
+app.use(cart); // Rutas relacionadas con el carrito de compras de los usuarios
 
 // Inicia el servidor y lo hace escuchar en el puerto especificado
 app.listen(port, () => {
