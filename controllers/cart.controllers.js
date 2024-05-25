@@ -108,3 +108,33 @@ export const eliminarCarritoDeCompras = async (req, res) => {
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+
+export const vaciarCarritoDeCompras = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+
+    // Verifica si el usuario existe
+    const usuario = await Usuario.findByPk(decodedToken.id);
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // Busca el carrito de compras del usuario
+    let carrito = await Cart.findOne({ where: { usuarioId: decodedToken.id } });
+    if (!carrito) {
+      return res
+        .status(404)
+        .json({ error: "Carrito de compras no encontrado" });
+    }
+
+    // Elimina todos los productos del carrito
+    await carrito.update({ productos: [], total: 0, cantidadProductos: 0, envioGratis: false });
+
+      return res.status(200).json({ message: "Carrito de compras vaciado exitosamente", carritoVacio: carrito });
+  } catch (error) {
+    console.error("Error al vaciar el carrito:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};

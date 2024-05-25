@@ -298,8 +298,14 @@ export const verificarToken = async (req, res) => {
       actualizacion: usuarioEncontrado.updatedAt,
     });
   } catch (error) {
-    return res
-      .status(401)
-      .json({ mensaje: "Acceso no autorizado, token inválido." });
+    if (error.message === 'jwt expired') {
+      return res
+        .status(401)
+        .json({ mensaje: "Acceso no autorizado, token expirado." });
+    } else {
+      return res
+        .status(401)
+        .json({ mensaje: "Acceso no autorizado, token inválido." });
+    }
   }
 };
