@@ -12,6 +12,7 @@ import {
   verificarToken,
 } from "../controllers/user.controllers.js";
 import { validateTokenAdmin } from "../middlewares/validateTokenAdmin.js";
+
 const router = Router();
 
 router.get("/usuarios", validateTokenAdmin, obtenerUsuarios);

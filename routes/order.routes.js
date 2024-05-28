@@ -5,6 +5,7 @@ import {
   createOrder,
   deleteOrderByUserId,
   getOrderForUserId,
+  deleteOrderByClientId,
 } from "../controllers/order.controllers.js";
 const router = Router();
 
@@ -14,6 +15,8 @@ router.post("/ordenById", getOrderForUserId);
 
 router.post("/orden", createOrder);
 
-router.delete("/orden", deleteOrderByUserId);
+router.delete("/ordenUser", deleteOrderByUserId);
+
+router.delete("/ordenClient", deleteOrderByClientId);
 
 export default router;

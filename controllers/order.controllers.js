@@ -36,7 +36,7 @@ export const createOrder = async (req, res) => {
     const newOrder = await Order.create({
       idUsuario,
       listaProductos,
-      estado: estado ,
+      estado: estado,
       total: total,
       metodoDePago: metodoDePago,
       pago: false,
@@ -116,7 +116,7 @@ export const getOrderForUserId = async (req, res) => {
 
 //CONTROLADOR PARA ELIMINAR UNA ORDEN ESPECIFICA EN BASE  AL ID DEL USUARIO BRO
 export const deleteOrderByUserId = async (req, res) => {
-  const {token}  = req.body;
+  const { token } = req.body;
   let idUser;
 
   if (!token) {
@@ -127,7 +127,7 @@ export const deleteOrderByUserId = async (req, res) => {
   }
 
   try {
-    const decodedToken = jwt.verify(token.token, process.env.TOKEN_SECRET)
+    const decodedToken = jwt.verify(token.token, process.env.TOKEN_SECRET);
     idUser = decodedToken.id;
     // Buscar la orden del usuario
     const order = await Order.findOne({ where: { idUsuario: idUser } });
@@ -158,6 +158,57 @@ export const deleteOrderByUserId = async (req, res) => {
 
     // Ahora que se ha actualizado el stock de los productos, proceder a eliminar la orden
     await Order.destroy({ where: { idUsuario: idUser } });
+
+    return res
+      .status(200)
+      .json({ message: "Stock actualizado y orden eliminada exitosamente" });
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "El token ha expirado" });
+    } else {
+      return res.status(400).json({ message: "Token inválido" });
+    }
+  }
+};
+
+export const deleteOrderByClientId = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    console.log("Error, no se puede proceder, no hay token.");
+    return res
+      .status(400)
+      .json({ message: "Error, no se puede proceder, no hay token." });
+  }
+
+  try {
+    const order = await Order.findOne({ where: { idUsuario: id } });
+    if (!order) {
+      return res
+        .status(404)
+        .json({ message: "No se encontró ninguna orden para este usuario" });
+    }
+
+    for (const product of order.listaProductos) {
+      try {
+        // Buscar el producto en el modelo Product
+        const foundProduct = await Product.findOne({
+          where: { id: product.id },
+        });
+
+        if (foundProduct) {
+          // Actualizar el stock del producto
+          foundProduct.stock += product.cantidad;
+          await foundProduct.save();
+        }
+      } catch (error) {
+        // Manejar errores en la búsqueda o actualización del producto
+        console.error("Error al buscar o actualizar el producto:", error);
+      }
+    }
+
+    // Ahora que se ha actualizado el stock de los productos, proceder a eliminar la orden
+    await Order.destroy({ where: { idUsuario: id } });
 
     return res
       .status(200)

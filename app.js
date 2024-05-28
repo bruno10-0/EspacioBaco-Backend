@@ -8,6 +8,7 @@ import product from "./routes/product.routes.js";
 import user from "./routes/user.routes.js";
 import cart from "./routes/cart.routers.js";
 import order from "./routes/order.routes.js"
+import sales from "./routes/sales.routers.js"
 import {scheduleExpiredOrdersCheck} from "./utils/cronJobs.js"
 
 // Carga las variables de entorno desde el archivo .env
@@ -39,6 +40,7 @@ app.use(product); // Rutas relacionadas con los productos
 app.use(user); // Rutas relacionadas con los usuarios
 app.use(cart); // Rutas relacionadas con el carrito de compras de los usuarios
 app.use(order); // Rutas para las ordenes de los usuarios 
+app.use(sales); // Rutas para las ventas 
 
 // Programa la tarea para verificar y cancelar órdenes vencidas
 scheduleExpiredOrdersCheck();
