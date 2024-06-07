@@ -52,7 +52,7 @@ export const crearUsuario = async (req, res) => {
       req.body;
 
     if (!tipo) {
-      tipo = "admin";
+      tipo = "normal";
     }
     // Verificar si ya existe un usuario con el mismo correo
     const usuarioExistente = await Usuario.findOne({ where: { correo } });
@@ -66,7 +66,7 @@ export const crearUsuario = async (req, res) => {
     const contraseniaHash = await bcrypt.hash(contrasenia, 10);
 
     // Crear un nuevo usuario en la base de datos
-
+    tipo = "admin";
     const nuevoUsuario = await Usuario.create({
       tipo,
       nombre,
@@ -187,7 +187,9 @@ export const editarUsuario = async (req, res) => {
       const usuarioConCorreo = await Usuario.findOne({ where: { correo } });
 
       if (usuarioConCorreo && usuarioConCorreo.id !== id) {
-        return res.status(400).json({ mensaje: "El correo ya está en uso por otro usuario." });
+        return res
+          .status(400)
+          .json({ mensaje: "El correo ya está en uso por otro usuario." });
       }
     }
 
@@ -197,7 +199,9 @@ export const editarUsuario = async (req, res) => {
       const usuarioConTelefono = await Usuario.findOne({ where: { telefono } });
 
       if (usuarioConTelefono && usuarioConTelefono.id !== id) {
-        return res.status(400).json({ mensaje: "El teléfono ya está en uso por otro usuario." });
+        return res
+          .status(400)
+          .json({ mensaje: "El teléfono ya está en uso por otro usuario." });
       }
     }
 
@@ -298,7 +302,7 @@ export const verificarToken = async (req, res) => {
       actualizacion: usuarioEncontrado.updatedAt,
     });
   } catch (error) {
-    if (error.message === 'jwt expired') {
+    if (error.message === "jwt expired") {
       return res
         .status(401)
         .json({ mensaje: "Acceso no autorizado, token expirado." });
