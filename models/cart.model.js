@@ -10,10 +10,6 @@ export const Cart = sequelize.define("Carrito", {
   },
   usuarioId: {
     type: DataTypes.INTEGER,
-    references: {
-      model: Usuario,
-      key: "id",
-    },
     allowNull: false,
   },
   productos: {
