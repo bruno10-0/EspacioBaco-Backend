@@ -52,7 +52,7 @@ export const crearUsuario = async (req, res) => {
       req.body;
 
     if (!tipo) {
-      tipo = "normal";
+      tipo = "admin";
     }
     // Verificar si ya existe un usuario con el mismo correo
     const usuarioExistente = await Usuario.findOne({ where: { correo } });

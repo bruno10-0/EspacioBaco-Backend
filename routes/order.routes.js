@@ -6,10 +6,13 @@ import {
   deleteOrderByUserId,
   getOrderForUserId,
   deleteOrderByClientId,
+  getOrderById
 } from "../controllers/order.controllers.js";
 const router = Router();
 
 router.get("/orden", getAllOrders);
+
+router.get("/orden/:id", getOrderById);
 
 router.post("/ordenById", getOrderForUserId);
 

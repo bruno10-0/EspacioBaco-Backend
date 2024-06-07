@@ -221,3 +221,27 @@ export const deleteOrderByClientId = async (req, res) => {
     }
   }
 };
+
+export const getOrderById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "No se encontró un ID, por ende no se puede proceder." });
+  }
+
+  try {
+    // Buscar la orden en la base de datos
+    const orden = await Order.findByPk(id);
+
+    if (!orden) {
+      return res.status(404).json({ message: "Orden no encontrada" });
+    }
+
+    // Devolver la orden encontrada
+    return res.status(200).json(orden);
+  } catch (error) {
+    console.error("Error al obtener la orden:", error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+

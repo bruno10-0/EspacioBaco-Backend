@@ -34,6 +34,9 @@ app.use(
 // Middleware para el registro de solicitudes HTTP (solicitudes de desarrollo)
 app.use(morgan("dev"));
 
+// Programa la tarea para verificar y cancelar órdenes vencidas
+scheduleExpiredOrdersCheck();
+
 // Rutas principales de la aplicación
 app.use(publication); // Rutas relacionadas con las publicaciones
 app.use(product); // Rutas relacionadas con los productos
@@ -41,10 +44,6 @@ app.use(user); // Rutas relacionadas con los usuarios
 app.use(cart); // Rutas relacionadas con el carrito de compras de los usuarios
 app.use(order); // Rutas para las ordenes de los usuarios 
 app.use(sales); // Rutas para las ventas 
-
-// Programa la tarea para verificar y cancelar órdenes vencidas
-scheduleExpiredOrdersCheck();
-
 // Inicia el servidor y lo hace escuchar en el puerto especificado
 app.listen(port, () => {
   console.log("El servidor está funcionando correctamente");
