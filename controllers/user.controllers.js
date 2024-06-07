@@ -48,7 +48,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
 export const crearUsuario = async (req, res) => {
   try {
     // Extraer los datos del cuerpo de la solicitud
-    const { nombre, apellido, correo, telefono, direccion, contrasenia, tipo } =
+    let { nombre, apellido, correo, telefono, direccion, contrasenia, tipo } =
       req.body;
 
     if (!tipo) {
