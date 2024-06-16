@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
+//region obtenerUsuarios
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -23,6 +24,8 @@ export const obtenerUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+
+//region obtenerUsuarioPorId
 
 export const obtenerUsuarioPorId = async (req, res) => {
   try {
@@ -45,6 +48,8 @@ export const obtenerUsuarioPorId = async (req, res) => {
   }
 };
 
+//region crearUsuario
+
 export const crearUsuario = async (req, res) => {
   try {
     // Extraer los datos del cuerpo de la solicitud
@@ -66,7 +71,6 @@ export const crearUsuario = async (req, res) => {
     const contraseniaHash = await bcrypt.hash(contrasenia, 10);
 
     // Crear un nuevo usuario en la base de datos
-    tipo = "admin";
     const nuevoUsuario = await Usuario.create({
       tipo,
       nombre,
@@ -89,6 +93,8 @@ export const crearUsuario = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+
+//region crearUsuarioPorAdmin
 
 export const crearUsuarioPorAdmin = async (req, res) => {
   try {
@@ -128,6 +134,7 @@ export const crearUsuarioPorAdmin = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+//region iniciarSesion
 
 export const iniciarSesion = async (req, res) => {
   try {
@@ -164,6 +171,7 @@ export const iniciarSesion = async (req, res) => {
       .json({ mensaje: "Error interno del servidor al iniciar sesión" });
   }
 };
+//region editarUsuario
 
 export const editarUsuario = async (req, res) => {
   try {
@@ -224,7 +232,15 @@ export const editarUsuario = async (req, res) => {
   }
 };
 
+//region eliminarUsuario
+
 export const eliminarUsuario = async (req, res) => {
+  const tokenHeader = req.headers.authorization;
+
+  const token = tokenHeader.split(" ")[1]; // Obtener solo el token sin 'Bearer'
+
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+
   try {
     // Obtener el ID del usuario desde los parámetros de la solicitud
     const { id } = req.params;
@@ -237,6 +253,12 @@ export const eliminarUsuario = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado." });
     }
 
+    if (decodedToken.id == id) {
+      return res
+        .status(403)
+        .json({ mensaje: "No puedes autoeliminarte." });
+    }
+
     // Eliminar el usuario de la base de datos
     await usuario.destroy();
 
@@ -247,6 +269,8 @@ export const eliminarUsuario = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+
+//region eliminarUsuarios
 
 export const eliminarUsuarios = async (req, res) => {
   try {
@@ -270,6 +294,8 @@ export const eliminarUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+
+//region verificarToken
 
 export const verificarToken = async (req, res) => {
   const { token } = req.body;
