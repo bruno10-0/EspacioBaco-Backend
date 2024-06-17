@@ -253,10 +253,14 @@ export const eliminarUsuario = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado." });
     }
 
+    // Verificar si el ID del usuario extraído del token es igual al ID que se desea eliminar.
+    // Si son iguales, se devuelve un estado de respuesta 403 con un mensaje indicando que no se permite eliminar la propia cuenta de usuario.
     if (decodedToken.id == id) {
       return res
         .status(403)
-        .json({ mensaje: "No puedes autoeliminarte." });
+        .json({
+          mensaje: "No puedes eliminar tu propia cuenta de usuario.",
+        });
     }
 
     // Eliminar el usuario de la base de datos
