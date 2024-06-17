@@ -1,4 +1,5 @@
 import { Usuario } from "../models/user.model.js";
+import { Order } from "../models/order.model.js";
 import bcrypt from "bcrypt";
 import { createAccessToken } from "../utils/jwt.js";
 import jwt from "jsonwebtoken";
@@ -189,7 +190,7 @@ export const editarUsuario = async (req, res) => {
     // Extraer los datos actualizados del cuerpo de la solicitud
     const { tipo, nombre, apellido, correo, telefono, direccion } = req.body;
 
-    // Actualizar los datos del usuario sin validar el correo si es el mismo usuario
+    // validar si es correo no le pertenece a otro usuario
     if (usuario.correo !== correo) {
       // Verificar si el correo ya está en uso por otro usuario
       const usuarioConCorreo = await Usuario.findOne({ where: { correo } });
@@ -256,11 +257,18 @@ export const eliminarUsuario = async (req, res) => {
     // Verificar si el ID del usuario extraído del token es igual al ID que se desea eliminar.
     // Si son iguales, se devuelve un estado de respuesta 403 con un mensaje indicando que no se permite eliminar la propia cuenta de usuario.
     if (decodedToken.id == id) {
-      return res
-        .status(403)
-        .json({
-          mensaje: "No puedes eliminar tu propia cuenta de usuario.",
-        });
+      return res.status(403).json({
+        mensaje: "No puedes eliminar tu propia cuenta de usuario.",
+      });
+    }
+    //Verificar si el usuario tiene una orden activa.
+    const ordenes = await Order.findAll({ where: { idUsuario: id } });
+
+    if (ordenes.length > 0) {
+      return res.status(403).json({
+        mensaje:
+          "No puedes eliminar este usuario porque tiene una orden activa.",
+      });
     }
 
     // Eliminar el usuario de la base de datos
@@ -277,6 +285,11 @@ export const eliminarUsuario = async (req, res) => {
 //region eliminarUsuarios
 
 export const eliminarUsuarios = async (req, res) => {
+  const tokenHeader = req.headers.authorization;
+
+  const token = tokenHeader.split(" ")[1]; // Obtener solo el token sin 'Bearer'
+
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   try {
     // Obtener los IDs de los usuarios a eliminar desde el cuerpo de la solicitud
     const { ids } = req.body;
@@ -288,6 +301,28 @@ export const eliminarUsuarios = async (req, res) => {
         .json({ mensaje: "Se requiere al menos un ID de usuario válido." });
     }
 
+    // Verificar si algún id de la lista de ids es igual al id extraído del token.
+    if (ids.some((id) => id == decodedToken.id)) {
+      return res.status(403).json({
+        mensaje:
+          "En la lista de ID detectamos que por accidente incluiste tu propia cuenta, lo cual no es aceptable.",
+      });
+    }
+
+    // Verificar si alguno de los usuarios tiene órdenes activas
+    const ordenesActivas = await Order.findAll({
+      where: {
+        idUsuario: ids,
+        estado: true, // 'estado: true' indica que la orden está activa
+      },
+    });
+
+    if (ordenesActivas.length > 0) {
+      return res.status(403).json({
+        mensaje: "No puedes eliminar usuarios que tienen órdenes activas.",
+      });
+    }
+
     // Eliminar los usuarios de la base de datos
     await Usuario.destroy({ where: { id: ids } });
 
@@ -296,6 +331,65 @@ export const eliminarUsuarios = async (req, res) => {
   } catch (error) {
     console.error("Error al eliminar usuarios:", error);
     res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+//region editar mi usuario
+
+export const editMyUser = async (req, res) => {
+  const { token, nombre, apellido, correo, telefono, direccion } = req.body;
+
+  try {
+    if (!token) {
+      return res
+        .status(401)
+        .json({ mensaje: "Acceso no autorizado, token no proporcionado." });
+    }
+
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id } = decoded;
+
+    let usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado." });
+    }
+
+    if (usuario.correo !== correo) {
+      const usuarioConCorreo = await Usuario.findOne({ where: { correo } });
+
+      if (usuarioConCorreo && usuarioConCorreo.id !== id) {
+        return res
+          .status(400)
+          .json({ mensaje: "El correo ya está en uso por otro usuario." });
+      }
+    }
+
+    if (usuario.telefono !== telefono) {
+      const usuarioConTelefono = await Usuario.findOne({ where: { telefono } });
+
+      if (usuarioConTelefono && usuarioConTelefono.id !== id) {
+        return res
+          .status(400)
+          .json({ mensaje: "El teléfono ya está en uso por otro usuario." });
+      }
+    }
+
+    // Actualizar los datos del usuario solo si han cambiado
+    if (usuario.nombre !== nombre) usuario.nombre = nombre;
+    if (usuario.apellido !== apellido) usuario.apellido = apellido;
+    if (usuario.correo !== correo) usuario.correo = correo;
+    if (usuario.telefono !== telefono) usuario.telefono = telefono;
+    if (usuario.direccion !== direccion) usuario.direccion = direccion;
+
+    await usuario.save();
+
+    res
+      .status(200)
+      .json({ usuario, mensaje: "Tu información ha sido actualizada exitosamente." });
+  } catch (error) {
+    console.error("Error al editar usuario:", error);
+    res.status(500).json({ mensaje: "Ocurrió un error al editar el usuario." });
   }
 };
 

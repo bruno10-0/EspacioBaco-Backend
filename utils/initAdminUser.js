@@ -3,7 +3,7 @@ import { Usuario } from '../models/user.model.js';
 
 const initAdminUser = async () => {
     try {
-      const adminExists = await Usuario.findOne({ where: { tipo: 'admin' } });
+      const adminExists = await Usuario.findOne({ where: { tipo: 'admin', correo: 'espaciobacoadmin@gmail.com'} });
   
       if (!adminExists) {
         const hashedPassword = await bcrypt.hash('Admin1234', 10);
